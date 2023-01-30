@@ -1,0 +1,18 @@
+<?php
+/**
+ * Copyright © Postpay. All rights reserved.
+ * See LICENSE for license details.
+ */
+
+/**
+ * @var \Postpay\Payment\Block\Widget\Cart $block
+ */
+?>
+
+<div data-mage-init='{"postpayUi": {}}'>
+    <div class="postpay-widget"
+         data-type="cart"
+         data-amount="<?= $block->escapeHtmlAttr($block->getSubtotal()->jsonSerialize()); ?>"
+         data-currency="<?= $block->escapeHtmlAttr($block->getCurrencyCode()); ?>">
+    </div>
+</div>

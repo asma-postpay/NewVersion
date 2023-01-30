@@ -1,0 +1,37 @@
+"Postpay checkout has been canceled.","Postpay checkout has been canceled."
+"Capture error. Id %1. Code: %2.","Capture error. Id %1. Code: %2."
+"Postpay is not properly configured.","Postpay is not properly configured."
+light,light
+dark,dark
+"Pay Now","Pay Now"
+"Continue to Postpay","Continue to Postpay"
+Postpay,Postpay
+"Merchant ID","Merchant ID"
+"Secret Key","Secret Key"
+"Sandbox Secret Key","Sandbox Secret Key"
+"Postpay Sandbox","Postpay Sandbox"
+"Postpay sandbox can be used to test payments.","Postpay sandbox can be used to test payments."
+"In-Context Checkout","In-Context Checkout"
+"Checkout flow that keeps customers local to your website.","Checkout flow that keeps customers local to your website."
+Theme,Theme
+"This controls the color to coordinate and contrast with different backgrounds.","This controls the color to coordinate and contrast with different backgrounds."
+"Accept payments using credit and debit cards.","Accept payments using credit and debit cards."
+Enabled,Enabled
+"Enable Pay Now.","Enable Pay Now."
+Title,Title
+"This controls the title which the user sees during checkout.","This controls the title which the user sees during checkout."
+"Payment Summary Widget","Payment Summary Widget"
+"Show the payment summary on the payment method selection.","Show the payment summary on the payment method selection."
+"Payment from Applicable Countries","Payment from Applicable Countries"
+"Payment from Specific Countries","Payment from Specific Countries"
+Debug,Debug
+"Enable debug mode by default, for example log for request/response.","Enable debug mode by default, for example log for request/response."
+"Sort Order","Sort Order"
+"Payment method order position on checkout/system configuration pages.","Payment method order position on checkout/system configuration pages."
+"Split Payment","Split Payment"
+"Buy now and pay later with zero interest and zero fees.","Buy now and pay later with zero interest and zero fees."
+"Enable Split Payment.","Enable Split Payment."
+"Product Widget","Product Widget"
+"Show a promotional message on product pages.","Show a promotional message on product pages."
+"Cart Widget","Cart Widget"
+"Show a promotional message on cart page.","Show a promotional message on cart page."

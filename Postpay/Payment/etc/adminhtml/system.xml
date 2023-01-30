@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Postpay. All rights reserved.
+ * See LICENSE for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="postpay" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="4" translate="label" type="text">
+                <label>Postpay</label>
+                <field id="merchant_id" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="text">
+                    <label>Merchant ID</label>
+                </field>
+                <field id="secret_key" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="20" translate="label" type="obscure">
+                    <label>Secret Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="sandbox_secret_key" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="30" translate="label" type="obscure">
+                    <label>Sandbox Secret Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="sandbox" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="40" translate="label comment" type="select">
+                    <label>Postpay Sandbox</label>
+                    <comment>Postpay sandbox can be used to test payments.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="in_context" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="50" translate="label comment" type="select">
+                    <label>In-Context Checkout</label>
+                    <comment>Checkout flow that keeps customers local to your website.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+
+                <!-- Checkout Order Status -->
+                <field id="order_status" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="50" translate="label comment" type="select">
+                    <label>NEW Order status</label>
+                    <comment>Order status for new orders.</comment>
+                    <source_model>Postpay\Payment\Model\Config\Source\Order\Status</source_model>
+                </field>
+                <field id="order_status_success" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="50" translate="label comment" type="select">
+                    <label>Success Order status</label>
+                    <comment>Order status when checkout is success.</comment>
+                    <source_model>Postpay\Payment\Model\Config\Source\Order\Status</source_model>
+                </field>
+                <field id="order_status_failure" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="50" translate="label comment" type="select">
+                    <label>Failure Order status</label>
+                    <comment>Order status when checkout is failed.</comment>
+                    <source_model>Postpay\Payment\Model\Config\Source\Order\Status</source_model>
+                </field>
+
+                
+                <field id="theme" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label comment" type="select">
+                    <label>Theme</label>
+                    <comment>This controls the color to coordinate and contrast with different backgrounds.</comment>
+                    <source_model>Postpay\Payment\Model\Config\Source\Theme</source_model>
+                </field>
+                <group id="postpay_pay_now" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="70" translate="label comment">
+                    <label>Pay Now</label>
+                    <comment>Accept payments using credit and debit cards.</comment>
+                    <field id="active" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="10" translate="label comment" type="select">
+                        <label>Enabled</label>
+                        <comment>Enable Pay Now.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/postpay_pay_now/active</config_path>
+                    </field>
+                    <field id="title" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label comment" type="text">
+                        <label>Title</label>
+                        <comment>This controls the title which the user sees during checkout.</comment>
+                        <config_path>payment/postpay_pay_now/title</config_path>
+                    </field>
+                    <field id="summary_widget" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="30" translate="label comment" type="select">
+                        <label>Payment Summary Widget</label>
+                        <comment>Show the payment summary on the payment method selection.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/postpay_pay_now/summary_widget</config_path>
+                    </field>
+                    <field id="allowspecific" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="40" translate="label" type="allowspecific">
+                        <label>Payment from Applicable Countries</label>
+                        <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                        <config_path>payment/postpay_pay_now/allowspecific</config_path>
+                    </field>
+                    <field id="specificcountry" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="50" translate="label" type="multiselect">
+                        <label>Payment from Specific Countries</label>
+                        <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                        <can_be_empty>1</can_be_empty>
+                    </field>
+                    <field id="debug" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="60" translate="label comment" type="select">
+                        <label>Debug</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <comment>Enable debug mode by default, for example log for request/response.</comment>
+                        <config_path>payment/postpay_pay_now/debug</config_path>
+                    </field>
+                    <field id="sort_order" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="70" translate="label comment" type="text">
+                        <label>Sort Order</label>
+                        <comment>Payment method order position on checkout/system configuration pages.</comment>
+                        <config_path>payment/postpay_pay_now/sort_order</config_path>
+                        <validate>validate-number validate-zero-or-greater</validate>
+                    </field>
+                </group>
+                <group id="postpay_split_payment" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="80" translate="label comment">
+                    <label>Split Payment</label>
+                    <comment>Buy now and pay later with zero interest and zero fees.</comment>
+                    <field id="active" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="10" translate="label comment" type="select">
+                        <label>Enabled</label>
+                        <comment>Enable Split Payment.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/postpay/active</config_path>
+                    </field>
+                    <field id="title" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label comment" type="text">
+                        <label>Title</label>
+                        <comment>This controls the title which the user sees during checkout.</comment>
+                        <config_path>payment/postpay/title</config_path>
+                    </field>
+                    <field id="product_widget" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="30" translate="label comment" type="select">
+                        <label>Product Widget</label>
+                        <comment>Show a promotional message on product pages.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/postpay/product_widget</config_path>
+                    </field>
+                    <field id="cart_widget" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="40" translate="label comment" type="select">
+                        <label>Cart Widget</label>
+                        <comment>Show a promotional message on cart page.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/postpay/cart_widget</config_path>
+                    </field>
+                    <field id="summary_widget" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="50" translate="label comment" type="select">
+                        <label>Payment Summary Widget</label>
+                        <comment>Show the payment summary on the payment method selection.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/postpay/summary_widget</config_path>
+                    </field>
+                    <field id="allowspecific" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="60" translate="label" type="allowspecific">
+                        <label>Payment from Applicable Countries</label>
+                        <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                        <config_path>payment/postpay/allowspecific</config_path>
+                    </field>
+                    <field id="specificcountry" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="70" translate="label" type="multiselect">
+                        <label>Payment from Specific Countries</label>
+                        <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                        <can_be_empty>1</can_be_empty>
+                    </field>
+                    <field id="debug" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="80" translate="label comment" type="select">
+                        <label>Debug</label>
+                        <comment>Enable debug mode by default, for example log for request/response.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/postpay/debug</config_path>
+                    </field>
+                    <field id="sort_order" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="90" translate="label comment" type="text">
+                        <label>Sort Order</label>
+                        <comment>Payment method order position on checkout/system configuration pages.</comment>
+                        <config_path>payment/postpay/sort_order</config_path>
+                        <validate>validate-number validate-zero-or-greater</validate>
+                    </field>
+                </group>
+            </group>
+        </section>
+    </system>
+</config>

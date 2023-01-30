@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Postpay. All rights reserved.
+ * See LICENSE for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <postpay>
+                <active>0</active>
+                <model>Postpay\Payment\Model\Method\SplitPayment</model>
+                <payment_action>order</payment_action>
+                <title>Instalments with Postpay</title>
+                <sandbox>0</sandbox>
+                <merchant_id/>
+                <secret_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <sandbox_secret_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <in_context>1</in_context>
+                <order_status>pending</order_status>
+                <order_status_success>processing</order_status_success>
+                <order_status_failure>canceled</order_status_failure>
+                <theme>light</theme>
+                <debug>1</debug>
+                <allowspecific>0</allowspecific>
+                <product_widget>1</product_widget>
+                <cart_widget>1</cart_widget>
+                <summary_widget>1</summary_widget>
+                <sort_order>0</sort_order>
+            </postpay>
+            <postpay_pay_now>
+                <active>0</active>
+                <model>Postpay\Payment\Model\Method\PayNow</model>
+                <payment_action>authorize_capture</payment_action>
+                <title>Credit or Debit Card</title>
+                <debug>0</debug>
+                <allowspecific>0</allowspecific>
+                <summary_widget>1</summary_widget>
+                <sort_order>0</sort_order>
+            </postpay_pay_now>
+        </payment>
+    </default>
+</config>

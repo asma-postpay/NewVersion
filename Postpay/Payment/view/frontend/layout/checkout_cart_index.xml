@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Postpay. All rights reserved.
+ * See LICENSE for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="checkout.cart.methods">
+            <block class="Postpay\Payment\Block\Widget\Cart"
+                   name="postpay.widget.cart"
+                   template="Postpay_Payment::widget/cart.phtml"
+                   ifconfig="payment/postpay/cart_widget"
+                   after="checkout.cart.methods.onepage.bottom"/>
+        </referenceContainer>
+    </body>
+</page>

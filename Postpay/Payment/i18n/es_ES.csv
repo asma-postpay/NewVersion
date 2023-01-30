@@ -1,0 +1,37 @@
+"Postpay checkout has been canceled.","El checkout con Postpay ha sido cancelado."
+"Capture error. Id %1. Code: %2.","Error en la captura. Id %1. Código: %2."
+"Postpay is not properly configured.","Postpay no está configurado correctamente."
+light,claro
+dark,oscuro
+"Pay Now","Pagar Ahora"
+"Continue to Postpay","Continuar con Postpay"
+Postpay,Postpay
+"Merchant ID","Merchant ID"
+"Secret Key","Clave Secreta"
+"Sandbox Secret Key","Clave Secreta Sandbox"
+"Postpay Sandbox","Postpay Sandbox"
+"Postpay sandbox can be used to test payments.","Postpay sandbox puede ser usado para probar la pasarela de pago."
+"In-Context Checkout","In-Context Checkout"
+"Checkout flow that keeps customers local to your website.","Proceso de checkout que mantiene a los clientes localizados en su sitio web."
+Theme,Tema
+"This controls the color to coordinate and contrast with different backgrounds.","Esto controla el color para coordinar y contrastar con diferentes fondos."
+"Accept payments using credit and debit cards.","Aceptar pagos con tarjetas de crédito y débito."
+Enabled,Habilitado
+"Enable Pay Now.","Habilitar Pagar Ahora."
+Title,Título
+"This controls the title which the user sees during checkout.","Esto controla el título que el usuario ve durante el proceso de compra."
+"Payment Summary Widget","Widget de Resumen de Pago"
+"Show the payment summary on the payment method selection.","Mostrar el resumen de pago en la selección del método de pago."
+"Payment from Applicable Countries","Países Aplicables"
+"Payment from Specific Countries","Países Específicos"
+Debug,Depuración
+"Enable debug mode by default, for example log for request/response.","Habilitar el modo de depuración de forma predeterminada, por ejemplo, el registro de solicitudes/respuestas."
+"Sort Order","Orden de Clasificación"
+"Payment method order position on checkout/system configuration pages.","Posición del método de pago en las páginas de configuración del checkout y del sistema."
+"Split Payment","Pago Fraccionado"
+"Buy now and pay later with zero interest and zero fees.","Compra ahora y paga más tarde con cero interés y sin cargos."
+"Enable Split Payment.","Habilitar Pago Fraccionado"
+"Product Widget","Widget de Producto"
+"Show a promotional message on product pages.","Mostrar un mensaje promocional en las páginas de productos."
+"Cart Widget","Widget de Carrito"
+"Show a promotional message on cart page.","Mostrar un mensaje promocional en la página del carrito."
