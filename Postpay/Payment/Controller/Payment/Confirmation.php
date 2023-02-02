@@ -20,6 +20,8 @@ use Postpay\Exceptions\RESTfulException;
 use Postpay\Payment\Gateway\Config\Config;
 use Postpay\Payment\Model\Adapter\AdapterInterface;
 use Postpay\Serializers\Decimal;
+use Magento\Sales\Model\Order\Email\Sender\OrderSender;
+use Psr\Log\LoggerInterface;
 
 /**
  * Order capture controller.
@@ -30,6 +32,8 @@ class Confirmation extends Action
     private AdapterInterface $postpayAdapter;
     private Order $order;
     private Config $config;
+    private LoggerInterface $logger;
+    private OrderSender $orderSender;
 
     /**
      * Constructor.
@@ -45,7 +49,9 @@ class Confirmation extends Action
         Http             $request,
         AdapterInterface $postpayAdapter,
         Order            $order,
-        Config           $config
+        Config           $config,
+        LoggerInterface $logger,
+        OrderSender $orderSender
     )
     {
         parent::__construct($context);
@@ -53,6 +59,8 @@ class Confirmation extends Action
         $this->postpayAdapter = $postpayAdapter;
         $this->order = $order;
         $this->config = $config;
+        $this->logger = $logger;
+        $this->orderSender = $orderSender;
     }
 
     /**
@@ -106,7 +114,27 @@ class Confirmation extends Action
         }
 
         $this->changeOrderStatus($order, $orderStatus);
+        $emailSent = $this->sendEmail($order);
+        if(!$emailSent){
+            $this->messageManager->addErrorMessage(
+                __('Unable to Send Order Confirmation Email for order . Id %1.', $orderId)
+            );
+        }
         return $resultRedirect->setPath($redirect);
+    }
+
+    /**
+     * @param Order $order
+     * @return bool
+     */
+    public function sendEmail(Order $order){
+        try {
+            $this->orderSender->send($order);
+        } catch (\Exception $e) {
+            $this->logger->critical($e);
+            return false;
+        }
+        return true;
     }
 
 
