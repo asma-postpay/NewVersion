@@ -10,7 +10,4 @@
         <observer name="postpay_payment_payment_method_is_active" instance="Postpay\Payment\Observer\IsActiveObserver" />
         <observer name="postpay_pay_now_payment_payment_method_is_active" instance="Postpay\Payment\Observer\IsActiveObserver" />
     </event>
-        <event name="checkout_onepage_controller_success_action">
-        <observer name="checkout_onepage_controller_success_action_sendmail" instance="Postpay\Payment\Observer\SendMailOnOrderSuccess" />
-    </event>
 </config>
