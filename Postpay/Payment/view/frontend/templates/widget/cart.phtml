@@ -13,6 +13,7 @@
     <div class="postpay-widget"
          data-type="cart"
          data-amount="<?= $block->escapeHtmlAttr($block->getSubtotal()->jsonSerialize()); ?>"
-         data-currency="<?= $block->escapeHtmlAttr($block->getCurrencyCode()); ?>">
+         data-currency="<?= $block->escapeHtmlAttr($block->getCurrencyCode()); ?>"
+         data-locale="<?= $block->escapeHtmlAttr($block->getCurrentLocale()); ?>">
     </div>
 </div>

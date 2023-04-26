@@ -14,6 +14,6 @@ var config = {
         }
     },
     paths: {
-        'postpay-js': 'https://cdn.postpay.io/v1/js/postpay'
+        'postpay-js': 'https://cdn-dev.postpay.io/v1/js/postpay'
     }
 };

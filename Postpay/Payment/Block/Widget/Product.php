@@ -7,6 +7,7 @@ namespace Postpay\Payment\Block\Widget;
 
 use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Block\Product\Context;
+use Magento\Framework\Locale\Resolver;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Postpay\Payment\Gateway\Config\Config;
 use Postpay\Payment\Model\Adapter\ApiAdapter;
@@ -25,6 +26,10 @@ class Product extends AbstractProduct
      * @var PriceCurrencyInterface
      */
     private $priceCurrency;
+    /**
+     * @var Resolver
+     */
+    private $localResolver;
 
     /**
      * Constructor.
@@ -32,18 +37,21 @@ class Product extends AbstractProduct
      * @param Context $context
      * @param Config $config
      * @param PriceCurrencyInterface $priceCurrency
+     * @param Resolver $LocalResolver
      * @param array $data
      */
     public function __construct(
         Context $context,
         Config $config,
         PriceCurrencyInterface $priceCurrency,
+        Resolver $localResolver,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
         $this->config = $config;
         $this->priceCurrency = $priceCurrency;
+        $this->localResolver = $localResolver;
     }
 
     /**
@@ -85,5 +93,13 @@ class Product extends AbstractProduct
             return parent::_toHtml();
         }
         return '';
+    }
+    public function getCurrentLocale(){
+        $currentLocaleCode= $this->localResolver->getLocale();
+        $languageCode = strstr($currentLocaleCode, '_',true);
+        if(!$languageCode){
+            return 'en';
+        }
+        return $languageCode;
     }
 }
