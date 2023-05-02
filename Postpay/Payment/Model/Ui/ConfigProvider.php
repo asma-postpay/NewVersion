@@ -60,12 +60,12 @@ class ConfigProvider implements ConfigProviderInterface
                     'inContext' => $this->config->inContext(),
                     'summaryWidget' => $this->config->summaryWidgetEnabled(),
                     'checkoutUrl' => $this->urlBuilder->getUrl('postpay/payment/checkout'),
-                    'icon' => 'https://cdn.postpay.io/imgs/postpay-new-logo.png'
+                    'icon' => 'https://cdn-dev.postpay.io/e/images/postpay-light.png'
                 ],
                 PayNowConfig::CODE => [
                     'summaryWidget' => $this->payNowConfig->summaryWidgetEnabled(),
                     'numInstalments' => PayNow::NUM_INSTALMENTS,
-                    'icon' => 'https://cdn.postpay.io/imgs/postpay-new-logo.png'
+                    'icon' => 'https://cdn-dev.postpay.io/e/images/postpay-light.png'
                 ]
             ]
         ];
