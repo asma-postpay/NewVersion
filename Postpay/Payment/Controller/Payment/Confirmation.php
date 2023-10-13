@@ -21,7 +21,10 @@ use Postpay\Payment\Gateway\Config\Config;
 use Postpay\Payment\Model\Adapter\AdapterInterface;
 use Postpay\Serializers\Decimal;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
-use Psr\Log\LoggerInterface;
+use Magento\Sales\Model\Service\InvoiceService;
+use Magento\Framework\DB\TransactionFactory as DBTransaction;
+use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
+use Magento\Sales\Model\Order\Payment\Transaction\Builder;
 
 /**
  * Order capture controller.
@@ -32,17 +35,26 @@ class Confirmation extends Action
     private AdapterInterface $postpayAdapter;
     private Order $order;
     private Config $config;
-    private LoggerInterface $logger;
     private OrderSender $orderSender;
+    private InvoiceService $invoiceService;
+    private DBTransaction $transactionFactory;
+    private InvoiceSender $invoiceSender;
+    private Builder $transactionBuilder;
+
 
     /**
      * Constructor.
      *
      * @param Context $context
-     * @param CartManagementInterface $quoteManagement
-     * @param CustomerSession $customerSession
-     * @param Session $checkoutSession
-     * @param Data $checkoutHelper
+     * @param Http $request
+     * @param AdapterInterface $postpayAdapter
+     * @param Order $order
+     * @param Config $config
+     * @param OrderSender $orderSender
+     * @param InvoiceService $invoiceService
+     * @param InvoiceSender $invoiceSender
+     * @param DBTransaction $transactionFactory
+     * @param Builder $transactionBuilder
      */
     public function __construct(
         Context          $context,
@@ -50,8 +62,11 @@ class Confirmation extends Action
         AdapterInterface $postpayAdapter,
         Order            $order,
         Config           $config,
-        LoggerInterface  $logger,
         OrderSender      $orderSender,
+        InvoiceService $invoiceService,
+        InvoiceSender $invoiceSender,
+        DBTransaction $transactionFactory,
+        Builder $transactionBuilder
     )
     {
         parent::__construct($context);
@@ -59,8 +74,11 @@ class Confirmation extends Action
         $this->postpayAdapter = $postpayAdapter;
         $this->order = $order;
         $this->config = $config;
-        $this->logger = $logger;
         $this->orderSender = $orderSender;
+        $this->invoiceService = $invoiceService;
+        $this->transactionFactory = $transactionFactory;
+        $this->invoiceSender = $invoiceSender;
+        $this->transactionBuilder = $transactionBuilder;
     }
 
     /**
@@ -71,8 +89,6 @@ class Confirmation extends Action
         $postpayOrderId = $this->request->getParam('order_id');
         $orderId = explode("-", $postpayOrderId)[0];
         $order = $this->order->loadByIncrementId($orderId);
-        /** @var \Magento\Quote\Model\Quote\Payment $payment */
-        $payment = $order->getPayment();
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $orderStatus = 'failure';
         $redirect = 'checkout/cart';
@@ -83,21 +99,16 @@ class Confirmation extends Action
             try {
                 $response = $this->postpayAdapter->capture($postpayOrderId);
                 $amount = (new Decimal($response['total_amount']))->toFloat();
-                $comment = 'Captured amount of ' . $amount. ' ' . $response['currency'] . ' Transaction ID : . ' . $response['order_id'];
-                $payment->setTransactionId($orderId);
-                $payment->setIsTransactionClosed(true);
-                $payment->setTransactionAdditionalInfo(
-                    Transaction::RAW_DETAILS,
-                    [
-                        'Status' => $response['status'],
-                        'Amount' => $amount
-                    ]
-                );
+                $comment = 'Captured amount of ' . $amount. ' '. $response['currency'] . ' Transaction ID : . '.$postpayOrderId;
+                $this->changeOrderStatus($order, 'success', $comment);
+                $paymentData = [
+                'id' => $postpayOrderId,
+                'Status' => $response['status'],
+                'Amount' => $amount];
+                $this->createTransaction($order,$paymentData);
                 $this->messageManager->addSuccessMessage(
                     __('Your order Id %1. was created', $orderId)
                 );
-
-                $this->changeOrderStatus($order, 'success', $comment);
                 return $resultRedirect->setPath('checkout/onepage/success');
             } catch (RESTfulException $exception) {
                 $this->messageManager->addErrorMessage(
@@ -136,17 +147,92 @@ class Confirmation extends Action
             }
             $order->save();
         } catch (\Exception $e) {
-            $this->logger->critical($e);
-            return false;
+            $order->addStatusHistoryComment('Error sending confirmation email, exception message: '.$e->getMessage(), false);
+            $order->save();
         }
-        return true;
     }
+
+       /**
+         * @param Order $order
+         * @return void
+         */
+    public function createInvoice(Order $order)
+        {
+            try {
+
+                if (!$order || !$order->getId() || !$order->canInvoice() || !$order->getPayment()) {
+                    return;
+                }
+
+                $invoice = $this->invoiceService->prepareInvoice($order);
+                if (!$invoice || !$invoice->getTotalQty()) {
+                    return;
+                }
+                $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_OFFLINE);
+                $invoice->register();
+                $invoice->getOrder()->setCustomerNoteNotify(false);
+                $invoice->getOrder()->setIsInProcess(true);
+                $order->addStatusHistoryComment('Automatically INVOICED', false);
+                $transactionSave = $this->transactionFactory
+                    ->create()
+                    ->addObject($invoice)
+                    ->addObject($invoice->getOrder());
+                $transactionSave->save();
+            } catch (\Exception $e) {
+                $order->addStatusHistoryComment('Error creating the invoice, exception message: '.$e->getMessage(), false);
+                $order->save();
+            }
+        }
+
+        /**
+         * @param Order $order
+         * @return void
+         */
+        public function createTransaction(Order $order, $paymentData = array())
+            {
+                try {
+                    /** @var \Magento\Quote\Model\Quote\Payment $payment */
+                    $payment = $order->getPayment();
+                    $payment->setLastTransId($paymentData['id']);
+                    $payment->setTransactionId($paymentData['id']);
+                    $payment->setAdditionalInformation(
+                        [Transaction::RAW_DETAILS => (array) $paymentData]
+                    );
+                    $formatedPrice = $order->getBaseCurrency()->formatTxt(
+                        $order->getGrandTotal()
+                    );
+
+                    $message = __('The authorized amount is %1.', $formatedPrice);
+                    $trans = $this->transactionBuilder;
+                    $transaction = $trans->setPayment($payment)
+                    ->setOrder($order)
+                    ->setTransactionId($paymentData['id'])
+                    ->setAdditionalInformation(
+                        [Transaction::RAW_DETAILS => (array) $paymentData]
+                    )
+                    ->setFailSafe(true)
+                    ->build(Transaction::TYPE_CAPTURE);
+
+                    $payment->addTransactionCommentsToOrder(
+                        $transaction,
+                        $message
+                    );
+                    $payment->setParentTransactionId($paymentData['id']);
+                    $payment->save();
+                    $order->save();
+
+                    return  $transaction->save()->getTransactionId();
+                } catch (Exception $e) {
+                     $order->addStatusHistoryComment('Error Saving the transaction, exception message: '.$e->getMessage(), false);
+                     $order->save();
+                }
+            }
 
 
     /**
      * @param Order $order
      * @param $status
-     * @return Order|void
+     * @return void
      */
     public function changeOrderStatus(Order $order, $status, $comment)
     {
@@ -158,20 +244,20 @@ class Confirmation extends Action
                 $order->addCommentToStatusHistory($comment);
                 $order->save();
                 $this->sendEmail($order);
-                return $order;
+                $this->createInvoice($order);
+                return;
             }
             $failureStatus = $this->config->getCheckoutFailureStatus();
             if ($failureStatus === Order::STATE_CANCELED) {
                 $order->addCommentToStatusHistory('Canceled Order, due to: '.$comment);
                 $order->cancel()->save();
-                return $order;
+                return;
             }
             $order->setState($failureStatus);
             $order->setStatus($failureStatus);
             $order->addCommentToStatusHistory($comment);
             $order->save();
-
-            return $order;
+            return;
         } catch (\Exception $exception) {
             $this->messageManager->addErrorMessage(
                 __('Unable to change the status of the order. Id %1. Code: %2.', $order->getIncrementId(), $exception->getErrorCode())
