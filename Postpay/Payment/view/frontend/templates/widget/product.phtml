@@ -14,9 +14,21 @@ use Magento\Framework\Json\Helper\Data;
 
 <div data-mage-init='{"postpayUi": <?= $this->helper(Data::class)->jsonEncode($block->getUiParams()) ?>}'>
     <div class="postpay-widget"
-         data-type="product"
+	 data-type="product"
+	data-widget-url="https://widgets-dev.postpay.io"
          data-amount="<?= $block->escapeHtmlAttr($block->getFinalPrice()->jsonSerialize()); ?>",
          data-currency="<?= $block->escapeHtmlAttr($block->getCurrencyCode()); ?>"
-         data-locale="<?= $block->escapeHtmlAttr($block->getCurrentLocale()); ?>">
+	 data-locale="<?= $block->escapeHtmlAttr($block->getCurrentLocale()); ?>">
+   <div id="postpay-custom-widget">
+  <span
+    id="postpay-clickable-text"
+    style="text-decoration: underline; cursor: pointer"
+  >
+  <span id="postpay-custom-widget-numInstalment">{numInstalment}</span>
+   interest-free</span>
+  payments
+  <span id="postpay-custom-widget-amount">{amount}</span>
+  <span id="postpay-custom-widget-infoIcon">{infoIcon}</span>
+</div>
     </div>
 </div>

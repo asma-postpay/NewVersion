@@ -227,7 +227,7 @@ class Request
 
     public function getApiUrl()
     {
-        $subdomain = $this->sandbox ? 'sandbox' : 'api';
+        $subdomain = $this->sandbox ? 'sandbox' : 'api-dev';
         return str_replace('<subdomain>', $subdomain, static::API_URL);
     }
 
