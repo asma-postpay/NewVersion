@@ -10,4 +10,9 @@
         <observer name="postpay_payment_payment_method_is_active" instance="Postpay\Payment\Observer\IsActiveObserver" />
         <observer name="postpay_pay_now_payment_payment_method_is_active" instance="Postpay\Payment\Observer\IsActiveObserver" />
     </event>
+
+    <event name="sales_order_creditmemo_save_after">
+        <observer name="creditmemo_save_after" instance="Postpay\Payment\Observer\CreditmemoSaveAfter" />
+    </event>
+
 </config>
